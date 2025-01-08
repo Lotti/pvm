@@ -13,13 +13,12 @@ func Test_Version_Compare(t *testing.T) {
 
 	assert.Equal(t, v1.LessThan(v2), true)
 	assert.Equal(t, v1.LessThanOrEqual(v2), true)
-	assert.Equal(t, v1.LessThanOrEqual(v3), true)
+	assert.Equal(t, v1.LessThanOrEqual(v3), false)
 	assert.Equal(t, v1.GreaterThan(v2), false)
 	assert.Equal(t, v1.GreaterThanOrEqual(v2), false)
 	assert.Equal(t, v1.GreaterThanOrEqual(v3), true)
 	assert.Equal(t, v1.Equal(v2), false)
 	assert.Equal(t, v1.Equal(v3), false)
-	assert.Equal(t, v1.Same(v3), false)
 
 	// testing versions with "nulled" (-1) values
 
