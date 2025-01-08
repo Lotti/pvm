@@ -108,15 +108,30 @@ func Use(args []string) {
 		os.Remove(shPathCGI)
 	}
 
+	// remove old composer bat script
+	batPathComposer := filepath.Join(binPath, "composer.bat")
+	if _, err := os.Stat(batPathComposer); err == nil {
+		os.Remove(batPathComposer)
+	}
+
+	// remove the old composer shscript
+	shPathComposer := filepath.Join(binPath, "composer")
+	if _, err := os.Stat(shPathComposer); err == nil {
+		os.Remove(shPathComposer)
+	}
+
 	versionFolderPath := filepath.Join(homeDir, ".pvm", "versions", selectedVersion.folder.Name())
 	versionPath := filepath.Join(versionFolderPath, "php.exe")
 	versionPathCGI := filepath.Join(versionFolderPath, "php-cgi.exe")
+	composerPath := filepath.Join(versionFolderPath, "composer", "composer.phar")
+	envPHPFolder := "PHP_FOLDER=" + versionFolderPath
 
 	// create bat script for php
 	batCommand := "@echo off \n"
-	batCommand = batCommand + "set filepath=\"" + versionPath + "\"\n"
-	batCommand = batCommand + "set arguments=%*\n"
-	batCommand = batCommand + "%filepath% %arguments%\n"
+	batCommand += "set " + envPHPFolder + "\n"
+	batCommand += "set filepath=\"" + versionPath + "\"\n"
+	batCommand += "set arguments=%*\n"
+	batCommand += "%filepath% %arguments%\n"
 
 	err = os.WriteFile(batPath, []byte(batCommand), 0755)
 
@@ -126,8 +141,8 @@ func Use(args []string) {
 
 	// create sh script for php
 	shCommand := "#!/bin/bash\n"
-	shCommand = shCommand + "filepath=\"" + versionPath + "\"\n"
-	shCommand = shCommand + "\"$filepath\" \"$@\""
+	shCommand += "filepath=\"" + versionPath + "\"\n"
+	shCommand += envPHPFolder + " \"$filepath\" \"$@\""
 
 	err = os.WriteFile(shPath, []byte(shCommand), 0755)
 
@@ -137,9 +152,10 @@ func Use(args []string) {
 
 	// create bat script for php-cgi
 	batCommandCGI := "@echo off \n"
-	batCommandCGI = batCommandCGI + "set filepath=\"" + versionPathCGI + "\"\n"
-	batCommandCGI = batCommandCGI + "set arguments=%*\n"
-	batCommandCGI = batCommandCGI + "%filepath% %arguments%\n"
+	batCommandCGI += "set " + envPHPFolder + "\n"
+	batCommandCGI += "set filepath=\"" + versionPathCGI + "\"\n"
+	batCommandCGI += "set arguments=%*\n"
+	batCommandCGI += "%filepath% %arguments%\n"
 
 	err = os.WriteFile(batPathCGI, []byte(batCommandCGI), 0755)
 
@@ -149,10 +165,36 @@ func Use(args []string) {
 
 	// create sh script for php-cgi
 	shCommandCGI := "#!/bin/bash\n"
-	shCommandCGI = shCommandCGI + "filepath=\"" + versionPathCGI + "\"\n"
-	shCommandCGI = shCommandCGI + "\"$filepath\" \"$@\""
+	shCommandCGI += "filepath=\"" + versionPathCGI + "\"\n"
+	shCommandCGI += envPHPFolder + " \"$filepath\" \"$@\""
 
 	err = os.WriteFile(shPathCGI, []byte(shCommandCGI), 0755)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// create bat script for composer
+	batCommandComposer := "@echo off \n"
+	batCommandComposer += "set " + batCommandComposer + "\n"
+	batCommandComposer = batCommandComposer + "set filepath=\"" + versionPath + "\"\n"
+	batCommandComposer = batCommandComposer + "set composerpath=\"" + composerPath + "\"\n"
+	batCommandComposer = batCommandComposer + "set arguments=%*\n"
+	batCommandComposer = batCommandComposer + "%filepath% %composerpath% %arguments%\n"
+
+	err = os.WriteFile(batPathComposer, []byte(batCommandComposer), 0755)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// create sh script for composer
+	shCommandComposer := "#!/bin/bash\n"
+	shCommandComposer = shCommandComposer + "filepath=\"" + versionPath + "\"\n"
+	shCommandComposer = shCommandComposer + "composerpath=\"" + composerPath + "\"\n"
+	shCommandComposer = shCommandComposer + envPHPFolder + " \"$filepath\" \"$composerpath\" \"$@\""
+
+	err = os.WriteFile(shPathComposer, []byte(shCommandComposer), 0755)
 
 	if err != nil {
 		log.Fatalln(err)
