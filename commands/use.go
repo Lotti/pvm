@@ -176,7 +176,7 @@ func Use(args []string) {
 
 	// create bat script for composer
 	batCommandComposer := "@echo off \n"
-	batCommandComposer += "set " + batCommandComposer + "\n"
+	batCommandComposer += "set " + envPHPFolder + "\n"
 	batCommandComposer = batCommandComposer + "set filepath=\"" + versionPath + "\"\n"
 	batCommandComposer = batCommandComposer + "set composerpath=\"" + composerPath + "\"\n"
 	batCommandComposer = batCommandComposer + "set arguments=%*\n"
