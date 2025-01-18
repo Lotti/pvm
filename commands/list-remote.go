@@ -21,7 +21,7 @@ func ListRemote() {
 
 	theme.Title("PHP versions available")
 	for _, version := range versions {
-		idx := slices.IndexFunc(installedVersions, func(v common.Version) bool { return v.Equal(version) })
+		idx := slices.IndexFunc(installedVersions, func(v common.Version) bool { return v.Same(version) })
 		found := " "
 		if idx != -1 {
 			found = "*"
