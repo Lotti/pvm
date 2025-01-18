@@ -114,7 +114,7 @@ func Use(args []string) {
 		os.Remove(batPathComposer)
 	}
 
-	// remove the old composer shscript
+	// remove the old composer sh script
 	shPathComposer := filepath.Join(binPath, "composer")
 	if _, err := os.Stat(shPathComposer); err == nil {
 		os.Remove(shPathComposer)

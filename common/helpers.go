@@ -103,6 +103,7 @@ func (v Version) Compare(o Version) int {
 		}
 		return 1
 	}
+
 	return 0
 }
 
@@ -126,19 +127,7 @@ func (v Version) LessThan(o Version) bool {
 	return v.CompareThreadSafe(o) == -1
 }
 
-func (v Version) LessThanOrEqual(o Version) bool {
-	return v.CompareThreadSafe(o) == -1 || v.CompareThreadSafe(o) == 0
-}
-
-func (v Version) GreaterThan(o Version) bool {
-	return v.CompareThreadSafe(o) == 1
-}
-
-func (v Version) GreaterThanOrEqual(o Version) bool {
-	return v.CompareThreadSafe(o) == 1 || v.CompareThreadSafe(o) == 0
-}
-
-func (v Version) Equal(o Version) bool {
+func (v Version) Same(o Version) bool {
 	return v.CompareThreadSafe(o) == 0
 }
 
